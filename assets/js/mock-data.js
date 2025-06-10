@@ -1,8 +1,9 @@
 // 📁 assets/js/mock-data.js
 // Dados mockados para demonstração do Dashboard SENAI Monitoring
+// 🎯 ALINHADO COM API V2.0 REAL - SEM ZONAS AUTOMÁTICAS
 
 // ===================================
-// 👥 DADOS DOS FUNCIONÁRIOS
+// 👥 DADOS DOS FUNCIONÁRIOS (CONFORME API REAL)
 // ===================================
 const MOCK_EMPLOYEES = [
     {
@@ -24,10 +25,10 @@ const MOCK_EMPLOYEES = [
             lastUpdate: new Date(Date.now() - 5 * 60000) // 5 min atrás
         },
         location: {
-            zone: 'setor_producao',
-            zoneName: 'Setor Produção',
+            // Coordenadas simples como na API V2.0 real
             latitude: -3.7319,
             longitude: -38.5267,
+            setor: 'Produção',
             lastSeen: new Date(Date.now() - 2 * 60000) // 2 min atrás
         },
         communication: {
@@ -55,10 +56,9 @@ const MOCK_EMPLOYEES = [
             lastUpdate: new Date(Date.now() - 3 * 60000)
         },
         location: {
-            zone: 'almoxarifado',
-            zoneName: 'Almoxarifado',
             latitude: -3.7330,
             longitude: -38.5280,
+            setor: 'Almoxarifado',
             lastSeen: new Date(Date.now() - 1 * 60000)
         },
         communication: {
@@ -86,10 +86,9 @@ const MOCK_EMPLOYEES = [
             lastUpdate: new Date(Date.now() - 45 * 60000) // 45 min atrás
         },
         location: {
-            zone: 'administrativo',
-            zoneName: 'Administrativo',
             latitude: -3.7290,
             longitude: -38.5240,
+            setor: 'Administrativo',
             lastSeen: new Date(Date.now() - 45 * 60000)
         },
         communication: {
@@ -117,10 +116,9 @@ const MOCK_EMPLOYEES = [
             lastUpdate: new Date(Date.now() - 1 * 60000)
         },
         location: {
-            zone: 'setor_producao',
-            zoneName: 'Setor Produção',
             latitude: -3.7315,
             longitude: -38.5265,
+            setor: 'Produção',
             lastSeen: new Date(Date.now() - 30000) // 30 seg atrás
         },
         communication: {
@@ -148,10 +146,9 @@ const MOCK_EMPLOYEES = [
             lastUpdate: new Date(Date.now() - 2 * 60000)
         },
         location: {
-            zone: 'area_externa',
-            zoneName: 'Área Externa',
             latitude: -3.7350,
             longitude: -38.5300,
+            setor: 'Área Externa',
             lastSeen: new Date(Date.now() - 5 * 60000)
         },
         communication: {
@@ -179,10 +176,9 @@ const MOCK_EMPLOYEES = [
             lastUpdate: new Date(Date.now() - 4 * 60000)
         },
         location: {
-            zone: 'administrativo',
-            zoneName: 'Administrativo',
             latitude: -3.7285,
             longitude: -38.5235,
+            setor: 'Administrativo',
             lastSeen: new Date(Date.now() - 1 * 60000)
         },
         communication: {
@@ -194,26 +190,17 @@ const MOCK_EMPLOYEES = [
 ];
 
 // ===================================
-// 🏭 DADOS DAS ZONAS
+// 🏭 SETORES BÁSICOS (SEM DETECÇÃO AUTOMÁTICA)
 // ===================================
-const MOCK_ZONES = {
-    setor_producao: {
-        id: 'setor_producao',
-        name: 'Setor Produção',
+const MOCK_SECTORS = {
+    producao: {
+        id: 'producao',
+        name: 'Produção',
         description: 'Área principal de produção industrial',
-        coordinates: {
-            center: { lat: -3.7319, lon: -38.5267 },
-            bounds: {
-                north: -3.7300,
-                south: -3.7340,
-                east: -38.5250,
-                west: -38.5280
-            }
-        },
+        // Coordenadas de referência (não automáticas)
+        referenceLocation: { lat: -3.7319, lon: -38.5267 },
         capacity: 50,
-        currentOccupancy: 2,
-        safetyLevel: 'high',
-        alerts: [],
+        currentEmployees: 2,
         equipment: [
             'Máquina CNC 001',
             'Máquina CNC 002',
@@ -225,19 +212,9 @@ const MOCK_ZONES = {
         id: 'almoxarifado',
         name: 'Almoxarifado',
         description: 'Área de armazenamento e controle de estoque',
-        coordinates: {
-            center: { lat: -3.7330, lon: -38.5280 },
-            bounds: {
-                north: -3.7320,
-                south: -3.7340,
-                east: -38.5270,
-                west: -38.5290
-            }
-        },
+        referenceLocation: { lat: -3.7330, lon: -38.5280 },
         capacity: 20,
-        currentOccupancy: 1,
-        safetyLevel: 'medium',
-        alerts: [],
+        currentEmployees: 1,
         equipment: [
             'Empilhadeira 001',
             'Sistema de Código de Barras',
@@ -248,48 +225,22 @@ const MOCK_ZONES = {
         id: 'administrativo',
         name: 'Administrativo',
         description: 'Escritórios e salas administrativas',
-        coordinates: {
-            center: { lat: -3.7290, lon: -38.5240 },
-            bounds: {
-                north: -3.7280,
-                south: -3.7300,
-                east: -38.5230,
-                west: -38.5250
-            }
-        },
+        referenceLocation: { lat: -3.7290, lon: -38.5240 },
         capacity: 30,
-        currentOccupancy: 1,
-        safetyLevel: 'low',
-        alerts: [],
+        currentEmployees: 1,
         equipment: [
             'Computadores',
             'Sistema de Telefonia',
             'Ar Condicionado Central'
         ]
     },
-    area_externa: {
-        id: 'area_externa',
-        name: 'Área Externa',
-        description: 'Pátio, estacionamento e áreas externas',
-        coordinates: {
-            center: { lat: -3.7350, lon: -38.5300 },
-            bounds: {
-                north: -3.7340,
-                south: -3.7360,
-                east: -38.5290,
-                west: -38.5310
-            }
-        },
+    outros: {
+        id: 'outros',
+        name: 'Outros',
+        description: 'Outras áreas e atividades externas',
+        referenceLocation: { lat: -3.7350, lon: -38.5300 },
         capacity: 100,
-        currentOccupancy: 1,
-        safetyLevel: 'medium',
-        alerts: [
-            {
-                type: 'weather',
-                message: 'Chuva prevista nas próximas 2 horas',
-                severity: 'warning'
-            }
-        ],
+        currentEmployees: 1,
         equipment: [
             'Câmeras de Segurança',
             'Portões Automáticos',
@@ -299,7 +250,7 @@ const MOCK_ZONES = {
 };
 
 // ===================================
-// 📊 ESTATÍSTICAS GERAIS
+// 📊 ESTATÍSTICAS GERAIS (SIMPLIFICADAS)
 // ===================================
 const MOCK_STATISTICS = {
     general: {
@@ -308,7 +259,7 @@ const MOCK_STATISTICS = {
         offlineEmployees: 38,
         criticalAlerts: 3,
         warningAlerts: 7,
-        monitoredZones: 4,
+        monitoredSectors: 4, // Mudou de "zonas" para "setores"
         systemUptime: '99.8%',
         lastUpdate: new Date()
     },
@@ -321,11 +272,12 @@ const MOCK_STATISTICS = {
         batteryLow: 5
     },
     location: {
-        byZone: {
-            'setor_producao': 45,
+        // Distribuição por setores (sem detecção automática)
+        bySector: {
+            'producao': 45,
             'almoxarifado': 23,
             'administrativo': 18,
-            'area_externa': 14
+            'outros': 14
         },
         movementToday: 234,
         emergencyExits: 0
@@ -339,7 +291,7 @@ const MOCK_STATISTICS = {
 };
 
 // ===================================
-// 🚨 ALERTAS ATIVOS
+// 🚨 ALERTAS ATIVOS (SIMPLIFICADOS)
 // ===================================
 const MOCK_ALERTS = [
     {
@@ -350,7 +302,7 @@ const MOCK_ALERTS = [
         employeeName: 'Pedro Alves',
         message: 'Frequência cardíaca elevada: 105 BPM',
         timestamp: new Date(Date.now() - 10 * 60000),
-        zone: 'area_externa',
+        sector: 'Área Externa',
         status: 'active',
         actions: [
             'Contatar funcionário',
@@ -366,7 +318,7 @@ const MOCK_ALERTS = [
         employeeName: 'Carlos Oliveira',
         message: 'Funcionário offline há mais de 30 minutos',
         timestamp: new Date(Date.now() - 45 * 60000),
-        zone: 'administrativo',
+        sector: 'Administrativo',
         status: 'acknowledged',
         actions: [
             'Verificar último local conhecido',
@@ -380,7 +332,7 @@ const MOCK_ALERTS = [
         severity: 'warning',
         message: 'Bateria baixa em 5 dispositivos',
         timestamp: new Date(Date.now() - 20 * 60000),
-        zone: 'multiple',
+        sector: 'multiple',
         status: 'active',
         affectedDevices: ['DEVICE_001', 'DEVICE_003', 'DEVICE_007'],
         actions: [
@@ -501,8 +453,8 @@ function getEmployeesByStatus(status) {
     return MOCK_EMPLOYEES.filter(emp => emp.status === status);
 }
 
-function getEmployeesByZone(zone) {
-    return MOCK_EMPLOYEES.filter(emp => emp.location.zone === zone);
+function getEmployeesBySector(sector) {
+    return MOCK_EMPLOYEES.filter(emp => emp.location.setor === sector);
 }
 
 function generateRandomHealthData() {
@@ -531,7 +483,7 @@ function updateMockDataRealTime() {
     return {
         employees: MOCK_EMPLOYEES,
         statistics: MOCK_STATISTICS,
-        zones: MOCK_ZONES,
+        sectors: MOCK_SECTORS,
         alerts: MOCK_ALERTS
     };
 }
@@ -557,7 +509,7 @@ const MOCK_MOBILE_CONFIG = {
 if (typeof window !== 'undefined') {
     window.MOCK_DATA = {
         employees: MOCK_EMPLOYEES,
-        zones: MOCK_ZONES,
+        sectors: MOCK_SECTORS,
         statistics: MOCK_STATISTICS,
         alerts: MOCK_ALERTS,
         communications: MOCK_COMMUNICATIONS,
@@ -568,7 +520,7 @@ if (typeof window !== 'undefined') {
         // Funções utilitárias
         getRandomEmployee,
         getEmployeesByStatus,
-        getEmployeesByZone,
+        getEmployeesBySector,
         generateRandomHealthData,
         updateMockDataRealTime
     };
@@ -580,7 +532,7 @@ if (typeof window !== 'undefined') {
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
         MOCK_EMPLOYEES,
-        MOCK_ZONES,
+        MOCK_SECTORS,
         MOCK_STATISTICS,
         MOCK_ALERTS,
         MOCK_COMMUNICATIONS,
@@ -589,7 +541,7 @@ if (typeof module !== 'undefined' && module.exports) {
         MOCK_MOBILE_CONFIG,
         getRandomEmployee,
         getEmployeesByStatus,
-        getEmployeesByZone,
+        getEmployeesBySector,
         generateRandomHealthData,
         updateMockDataRealTime
     };

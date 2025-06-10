@@ -1,5 +1,6 @@
 // 📁 assets/js/app.js
 // JavaScript principal do Dashboard SENAI Monitoring
+// 🎯 ALINHADO COM API V2.0 REAL - SEM ZONAS AUTOMÁTICAS
 
 // ===================================
 // 🔧 CONFIGURAÇÕES GLOBAIS - GITHUB PAGES READY
@@ -158,7 +159,7 @@ function updateMenuState(activeSection) {
 }
 
 // ===================================
-// 📊 DADOS EM TEMPO REAL
+// 📊 DADOS EM TEMPO REAL (ALINHADO COM API V2.0)
 // ===================================
 function startRealTimeUpdates() {
     console.log('⚡ Iniciando atualizações em tempo real...');
@@ -173,7 +174,7 @@ function startRealTimeUpdates() {
 async function updateRealTimeData() {
     try {
         if (CONFIG.MOCK_MODE) {
-            // Usar dados mockados
+            // Usar dados mockados (alinhados com API real)
             appState.realTimeData = generateMockData();
         } else {
             // Fazer chamadas à API real
@@ -202,7 +203,7 @@ function generateMockData() {
             totalEmployees: 127,
             activeEmployees: Math.floor(Math.random() * 20) + 85, // 85-105
             criticalAlerts: Math.floor(Math.random() * 5), // 0-4
-            monitoredZones: 4
+            monitoredSectors: 4 // Mudou de "zonas" para "setores"
         },
         employees: [
             {
@@ -212,7 +213,12 @@ function generateMockData() {
                 status: 'online',
                 heartRate: Math.floor(Math.random() * 30) + 70, // 70-100
                 bloodPressure: '120/80',
-                location: { zone: 'setor_producao', lat: -3.7319, lon: -38.5267 }
+                // Estrutura simplificada como na API V2.0 real
+                location: { 
+                    sector: 'Produção', 
+                    lat: -3.7319, 
+                    lon: -38.5267 
+                }
             },
             {
                 id: 'EMP002',
@@ -221,7 +227,11 @@ function generateMockData() {
                 status: 'online',
                 heartRate: Math.floor(Math.random() * 25) + 75, // 75-100
                 bloodPressure: '118/75',
-                location: { zone: 'almoxarifado', lat: -3.7330, lon: -38.5280 }
+                location: { 
+                    sector: 'Almoxarifado', 
+                    lat: -3.7330, 
+                    lon: -38.5280 
+                }
             },
             {
                 id: 'EMP003',
@@ -230,7 +240,11 @@ function generateMockData() {
                 status: 'offline',
                 heartRate: 0,
                 bloodPressure: '0/0',
-                location: { zone: 'administrativo', lat: -3.7290, lon: -38.5240 }
+                location: { 
+                    sector: 'Administrativo', 
+                    lat: -3.7290, 
+                    lon: -38.5240 
+                }
             },
             {
                 id: 'EMP004',
@@ -239,7 +253,11 @@ function generateMockData() {
                 status: 'online',
                 heartRate: Math.floor(Math.random() * 20) + 80, // 80-100
                 bloodPressure: '125/82',
-                location: { zone: 'setor_producao', lat: -3.7315, lon: -38.5265 }
+                location: { 
+                    sector: 'Produção', 
+                    lat: -3.7315, 
+                    lon: -38.5265 
+                }
             },
             {
                 id: 'EMP005',
@@ -248,14 +266,19 @@ function generateMockData() {
                 status: 'warning',
                 heartRate: Math.floor(Math.random() * 40) + 60, // 60-100
                 bloodPressure: '140/90',
-                location: { zone: 'area_externa', lat: -3.7350, lon: -38.5300 }
+                location: { 
+                    sector: 'Área Externa', 
+                    lat: -3.7350, 
+                    lon: -38.5300 
+                }
             }
         ],
-        zones: {
-            'setor_producao': 2,
-            'almoxarifado': 1,
-            'administrativo': 1,
-            'area_externa': 1
+        // Distribuição por setores (sem detecção automática)
+        sectors: {
+            'Produção': 2,
+            'Almoxarifado': 1,
+            'Administrativo': 1,
+            'Área Externa': 1
         },
         activity: generateActivityData()
     };
@@ -276,11 +299,11 @@ function generateActivityData() {
 }
 
 async function fetchFromAPI() {
-    // Em produção, fazer chamadas reais à API
+    // Em produção, fazer chamadas reais à API V2.0
     const endpoints = [
-        `${CONFIG.API_BASE_URL}/employees-stats`,
-        `${CONFIG.API_BASE_URL}/iot/stats`,
-        `${CONFIG.API_BASE_URL}/iot/locations-all`
+        `${CONFIG.API_BASE_URL}/api/employees-stats`,
+        `${CONFIG.API_BASE_URL}/api/iot/stats`,
+        `${CONFIG.API_BASE_URL}/api/iot/locations-all`
     ];
     
     const responses = await Promise.all(
@@ -306,7 +329,7 @@ function updateDashboardCards() {
     updateCardValue('.total-employees', data.statistics.totalEmployees);
     updateCardValue('.active-employees', data.statistics.activeEmployees);
     updateCardValue('.critical-alerts', data.statistics.criticalAlerts);
-    updateCardValue('.monitored-zones', data.statistics.monitoredZones);
+    updateCardValue('.monitored-zones', data.statistics.monitoredSectors); // Atualizado para setores
 }
 
 function updateCardValue(selector, newValue) {

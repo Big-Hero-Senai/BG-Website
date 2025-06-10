@@ -51,7 +51,7 @@ const GRADIENTS = {
 // 📊 VARIÁVEIS DOS GRÁFICOS
 // ===================================
 let activityChart = null;
-let zonesChart = null;
+let distributionChart = null;
 let healthChart = null;
 let performanceChart = null;
 
@@ -65,7 +65,7 @@ function initializeCharts() {
     setTimeout(() => {
         try {
             initActivityChart();
-            initZonesChart();
+            initDistributionChart();
             console.log('✅ Gráficos inicializados com sucesso');
         } catch (error) {
             console.error('❌ Erro ao inicializar gráficos:', error);
@@ -174,9 +174,9 @@ function initActivityChart() {
 }
 
 // ===================================
-// 🗺️ GRÁFICO DE DISTRIBUIÇÃO POR ZONAS
+// 🗺️ GRÁFICO DE DISTRIBUIÇÃO POR SETORES (ALINHADO COM API REAL)
 // ===================================
-function initZonesChart() {
+function initDistributionChart() {
     const canvas = document.getElementById('zonesChart');
     if (!canvas) {
         console.warn('⚠️ Canvas zonesChart não encontrado');
@@ -185,20 +185,20 @@ function initZonesChart() {
     
     const ctx = canvas.getContext('2d');
     
-    // Dados das zonas
-    const zonesData = {
-        labels: ['Setor Produção', 'Almoxarifado', 'Administrativo', 'Área Externa'],
-        data: [45, 23, 18, 14], // Porcentagens
+    // Dados dos setores (conforme API V2.0 real - sem zonas automáticas)
+    const sectorsData = {
+        labels: ['Produção', 'Almoxarifado', 'Administrativo', 'Outros'],
+        data: [45, 23, 19, 0], // Dados simples baseados em setores
         colors: [SENAI_COLORS.primary, SENAI_COLORS.secondary, SENAI_COLORS.success, SENAI_COLORS.warning]
     };
     
-    zonesChart = new Chart(ctx, {
+    distributionChart = new Chart(ctx, {
         type: 'doughnut',
         data: {
-            labels: zonesData.labels,
+            labels: sectorsData.labels,
             datasets: [{
-                data: zonesData.data,
-                backgroundColor: zonesData.colors,
+                data: sectorsData.data,
+                backgroundColor: sectorsData.colors,
                 borderColor: '#ffffff',
                 borderWidth: 3,
                 hoverBorderWidth: 4,
@@ -368,9 +368,9 @@ function updateCharts() {
         updateActivityChart();
     }
     
-    // Atualizar gráfico de zonas
-    if (zonesChart && appState.realTimeData.zones) {
-        updateZonesChart();
+    // Atualizar gráfico de distribuição
+    if (distributionChart && appState.realTimeData.sectors) {
+        updateDistributionChart();
     }
 }
 
@@ -384,13 +384,13 @@ function updateActivityChart() {
     }
 }
 
-function updateZonesChart() {
-    const zonesData = appState.realTimeData.zones;
+function updateDistributionChart() {
+    const sectorsData = appState.realTimeData.sectors;
     
-    if (zonesChart && zonesData) {
-        const values = Object.values(zonesData);
-        zonesChart.data.datasets[0].data = values;
-        zonesChart.update('active');
+    if (distributionChart && sectorsData) {
+        const values = Object.values(sectorsData);
+        distributionChart.data.datasets[0].data = values;
+        distributionChart.update('active');
     }
 }
 
@@ -440,7 +440,7 @@ function generateActivityMockData() {
 // 🔧 CONTROLES DOS GRÁFICOS
 // ===================================
 function toggleChartAnimation() {
-    const charts = [activityChart, zonesChart, healthChart, performanceChart];
+    const charts = [activityChart, distributionChart, healthChart, performanceChart];
     charts.forEach(chart => {
         if (chart) {
             chart.options.animation.duration = chart.options.animation.duration > 0 ? 0 : 750;
@@ -453,7 +453,7 @@ function exportChart(chartName) {
     let chart;
     switch (chartName) {
         case 'activity': chart = activityChart; break;
-        case 'zones': chart = zonesChart; break;
+        case 'distribution': chart = distributionChart; break;
         case 'health': chart = healthChart; break;
         case 'performance': chart = performanceChart; break;
     }
@@ -471,7 +471,7 @@ function resetChartZoom(chartName) {
     let chart;
     switch (chartName) {
         case 'activity': chart = activityChart; break;
-        case 'zones': chart = zonesChart; break;
+        case 'distribution': chart = distributionChart; break;
         case 'health': chart = healthChart; break;
         case 'performance': chart = performanceChart; break;
     }
@@ -485,7 +485,7 @@ function resetChartZoom(chartName) {
 // 🎯 CLEANUP E DESTRUIÇÃO
 // ===================================
 function destroyCharts() {
-    const charts = [activityChart, zonesChart, healthChart, performanceChart];
+    const charts = [activityChart, distributionChart, healthChart, performanceChart];
     charts.forEach(chart => {
         if (chart) {
             chart.destroy();
@@ -494,7 +494,7 @@ function destroyCharts() {
     
     // Reset das variáveis
     activityChart = null;
-    zonesChart = null;
+    distributionChart = null;
     healthChart = null;
     performanceChart = null;
 }
@@ -504,7 +504,7 @@ function destroyCharts() {
 // ===================================
 window.chartsDebug = {
     activity: () => activityChart,
-    zones: () => zonesChart,
+    distribution: () => distributionChart,
     health: () => healthChart,
     performance: () => performanceChart,
     update: () => updateCharts(),
