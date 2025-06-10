@@ -2,13 +2,22 @@
 // JavaScript principal do Dashboard SENAI Monitoring
 
 // ===================================
-// 🔧 CONFIGURAÇÕES GLOBAIS
+// 🔧 CONFIGURAÇÕES GLOBAIS - GITHUB PAGES READY
 // ===================================
 const CONFIG = {
-    API_BASE_URL: 'http://localhost:8080/api',
+    API_BASE_URL: '', // Vazio para GitHub Pages (só demo)
     UPDATE_INTERVAL: 30000, // 30 segundos
     ANIMATION_DURATION: 300,
-    MOCK_MODE: true // true para dados mockados, false para API real
+    MOCK_MODE: true, // ✅ SEMPRE true para GitHub Pages
+    
+    // Configurações específicas para GitHub Pages
+    DEMO_MODE: true,
+    AUTO_LOGIN: false, // Usuario pode testar login
+    GITHUB_PAGES: true,
+    
+    // URLs para GitHub Pages
+    REPOSITORY_URL: 'https://github.com/SEU-USUARIO/senai-dashboard-web',
+    API_DOCS_URL: 'https://github.com/SEU-USUARIO/senai-monitoring-api'
 };
 
 // ===================================
