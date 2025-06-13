@@ -1,11 +1,16 @@
-# 🎯 SENAI Dashboard Web - Sistema IoT V2.0
+# 🎯 Hero Band Dashboard - Sistema IoT V2.1.0
 
 [![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/HTML)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 [![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 [![Chart.js](https://img.shields.io/badge/Chart.js-FF6384?style=for-the-badge&logo=chart.js&logoColor=white)](https://www.chartjs.org/)
 
+[![Big Hero Team](https://img.shields.io/badge/Team-Big%20Hero-2563eb.svg)](#)
+[![Hero Band](https://img.shields.io/badge/Project-Hero%20Band-059669.svg)](#)
+[![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+
 **Dashboard Web Moderno para Monitoramento IoT Industrial**
+*Desenvolvido pela equipe Big Hero*
 
 Interface responsiva desenvolvida para visualização em tempo real dos dados coletados pelo sistema SENAI Monitoring API V2.0.
 
@@ -22,6 +27,19 @@ Dashboard web moderno e responsivo que consome dados da API SENAI Monitoring V2.
 - **Sistema de Comunicação** entre equipes
 - **Alertas e Notificações** críticas
 - **Dashboard Analítico** com gráficos interativos
+
+## 🦸‍♀️ **Sobre a Equipe Big Hero**
+
+A **Big Hero** é uma equipe especializada em soluções IoT industriais, 
+desenvolvendo o **Hero Band** - um sistema completo de monitoramento 
+através de pulseiras inteligentes para ambientes industriais.
+
+### **Hero Band Project**
+Sistema inovador que combina:
+- 🎯 Pulseiras IoT inteligentes
+- 📊 Monitoramento em tempo real  
+- 🚨 Alertas automáticos de segurança
+- 📱 Interface web responsiva
 
 ### **Arquitetura**
 ```
@@ -468,8 +486,8 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para de
 
 ---
 
-**Desenvolvido com ❤️ para o SENAI**
+**Desenvolvido com ❤️ pela Big Hero Team para o SENAI**
 
-*Dashboard Web V1.0 - Interface Moderna para Monitoramento Industrial IoT*
+*Hero Band V2.1.0 - Sistema de Monitoramento Industrial IoT*
 
-**🚀 Production Ready | 📱 Mobile First | ⚡ Real-time Updates**
+**🦸‍♀️ Big Hero | 🎯 Hero Band | 🏭 SENAI**

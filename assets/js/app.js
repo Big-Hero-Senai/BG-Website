@@ -60,7 +60,7 @@ let appState = {
 // 🚀 INICIALIZAÇÃO ATUALIZADA
 // ===================================
 document.addEventListener('DOMContentLoaded', async function() {
-    console.log('🚀 SENAI Dashboard V2.0 + API Integration iniciando...');
+    console.log('🚀 Hero Band Dashboard V2.1.0 + API Integration iniciando...');
     
     // 1. Verificar conexão com API
     await initializeApiConnection();
@@ -95,18 +95,18 @@ async function initializeApiConnection() {
     
     try {
         // Verificar se API está online
-        const isOnline = await senaiApi.checkConnection();
+        const isOnline = await heroBandApi.checkConnection();
         
         if (isOnline) {
             appState.apiStatus.isOnline = true;
             appState.apiStatus.lastCheck = new Date();
             
             // Buscar informações da API
-            const apiInfo = await senaiApi.getApiInfo();
+            const apiInfo = await heroBandApi.getApiInfo();
             console.log('📡 API Info:', apiInfo);
             
             // Mostrar notificação de sucesso
-            showNotification('✅ Conectado à API V2.1.0', 'success');
+            showNotification('✅ Conectado à Hero Band API V2.1.0', 'success');
             
             // Atualizar indicador visual
             updateConnectionIndicator(true);
@@ -127,7 +127,7 @@ async function initializeApiConnection() {
         // Fallback para dados mockados
         if (CONFIG.ENABLE_FALLBACK) {
             console.log('🔄 Ativando fallback para dados mockados');
-            showNotification('⚠️ API offline - usando dados demo', 'warning');
+            showNotification('⚠️ Hero Band API offline - usando dados demo', 'warning');
             CONFIG.MOCK_MODE = true; // Ativar modo mock temporariamente
         }
         
@@ -212,10 +212,10 @@ async function fetchFromRealAPI() {
             currentLocations,
             systemStats
         ] = await Promise.all([
-            senaiApi.getIoTStats(),
-            senaiApi.getEmployeesStats(),
-            senaiApi.getAllCurrentLocations(),
-            senaiApi.getSystemStats()
+            heroBandApi.getIoTStats(),
+            heroBandApi.getEmployeesStats(),
+            heroBandApi.getAllCurrentLocations(),
+            heroBandApi.getSystemStats()
         ]);
         
         console.log('✅ Dados da API recebidos:', {
@@ -548,7 +548,7 @@ async function retryApiConnection() {
     console.log('🔄 Tentando reconectar à API...');
     
     try {
-        const isOnline = await senaiApi.checkConnection();
+        const isOnline = await heroBandApi.checkConnection();
         
         if (isOnline) {
             CONFIG.MOCK_MODE = false;
@@ -636,8 +636,8 @@ function closeLogin() {
 
 function login() {
     const userData = {
-        name: 'Administrador SENAI',
-        email: 'admin@senai.com',
+        name: 'Admin Big Hero',
+        email: 'admin@bighero.com',
         role: 'admin',
         permissions: ['read', 'write', 'admin']
     };
@@ -904,7 +904,7 @@ function formatTime(date) {
 // ===================================
 // 🔍 DEBUG E DESENVOLVIMENTO ATUALIZADO
 // ===================================
-window.senaiDebug = {
+window.heroDebug = {
     state: () => console.log(appState),
     config: () => console.log(CONFIG),
     mockData: () => console.log(generateMockData()),
@@ -921,7 +921,7 @@ window.senaiDebug = {
         CONFIG.MOCK_MODE = true;
         updateRealTimeData();
     },
-    testConnection: () => senaiApi.checkConnection()
+    testConnection: () => heroBandApi.checkConnection()
 };
 
 console.log('🔧 Debug atualizado disponível via window.senaiDebug');

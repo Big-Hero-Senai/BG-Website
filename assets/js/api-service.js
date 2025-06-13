@@ -1,10 +1,4 @@
-// 📁 assets/js/api-service.js
-// Serviço de integração com SENAI Monitoring API V2.1.0
-// 🎯 CAPÍTULO 6.1: Conexão com API Real
-
-// ===================================
-// 🔧 CONFIGURAÇÃO DA API REAL
-// ===================================
+console.log('🔗 Hero Band API Service inicializado:', this.baseUrl);
 const API_CONFIG = {
     // ✅ API V2.1.0 Online no Fly.io
     BASE_URL: 'https://senai-monitoring-api.fly.dev',
@@ -42,7 +36,7 @@ const API_CONFIG = {
 // ===================================
 // 🌐 CLASSE DE INTEGRAÇÃO COM API
 // ===================================
-class SenaiApiService {
+class HeroBandApiService {
     constructor() {
         this.baseUrl = API_CONFIG.BASE_URL;
         this.isOnline = false;
@@ -50,7 +44,7 @@ class SenaiApiService {
         this.cache = new Map();
         this.cacheTimeout = 30000; // 30 segundos
         
-        console.log('🔗 SenaiApiService inicializado:', this.baseUrl);
+        console.log('🔗 Hero Band API Service inicializado:', this.baseUrl);
     }
     
     // ===================================
@@ -314,27 +308,27 @@ class SenaiApiService {
 // ===================================
 // 🚀 INSTÂNCIA GLOBAL DO SERVIÇO
 // ===================================
-const senaiApi = new SenaiApiService();
+const heroBandApi = new HeroBandApiService();
 
 // ===================================
 // 🔍 DEBUG E DESENVOLVIMENTO
 // ===================================
 if (typeof window !== 'undefined') {
-    window.senaiApi = senaiApi;
+    window.heroBandApi = heroBandApi;
     window.apiDebug = {
-        status: () => senaiApi.getConnectionStatus(),
-        cache: () => senaiApi.cache,
-        test: () => senaiApi.checkConnection(),
-        clear: () => senaiApi.clearCache(),
+        status: () => heroBandApi.getConnectionStatus(),
+        cache: () => heroBandApi.cache,
+        test: () => heroBandApi.checkConnection(),
+        clear: () => heroBandApi.clearCache(),
         config: () => API_CONFIG
     };
     
-    console.log('🔧 API Service carregado. Debug via window.senaiApi');
+    console.log('🔧 Hero Band API Service carregado. Debug via window.heroBandApi');
 }
 
 // ===================================
 // 📤 EXPORTAR PARA USO
 // ===================================
 if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { SenaiApiService, senaiApi, API_CONFIG };
+    module.exports = { HeroBandApiService, heroBandApi, API_CONFIG };
 }

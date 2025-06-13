@@ -1,33 +1,49 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SENAI Monitoring Dashboard - Sistema IoT V2.1.0 + API Integration</title>
-    
+    <title>Hero Band Dashboard - Sistema IoT V2.1.0 | Big Hero Team</title>
+
+    <meta name="description"
+        content="Hero Band - Sistema de Monitoramento IoT Industrial desenvolvido pela equipe Big Hero">
+    <meta name="author" content="Big Hero Team">
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
+
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
+
     <!-- Chart.js para gráficos -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.min.js"></script>
-    
+
     <!-- Configuração customizada do Tailwind -->
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        senai: {
-                            primary: '#1e40af',    // Azul SENAI
-                            secondary: '#f97316',  // Laranja
-                            success: '#22c55e',    // Verde
-                            warning: '#eab308',    // Amarelo
-                            danger: '#ef4444',     // Vermelho
-                            dark: '#1f2937',       // Cinza escuro
-                            light: '#f8fafc'      // Cinza claro
+                        // 🤖 Baymax neutros
+                        baymax: {
+                            50: '#FEFEFE',    // Branco Baymax
+                            100: '#F8FAFC',   // Muito claro
+                            200: '#E2E8F0',   // Claro
+                            500: '#64748B',   // Normal
+                            600: '#475569',   // Escuro
+                            800: '#1E293B'    // Background escuro
+                        },
+
+                        // 🔥 Big Hero cores principais
+                        hero: {
+                            primary: '#2563EB',    // Azul Hiro (tecnologia)
+                            secondary: '#059669',  // Verde Tech (sucesso)
+                            accent: '#7C3AED',     // Roxo futurístico
+                            success: '#10B981',    // Verde confirmação
+                            warning: '#F59E0B',    // Amarelo atenção
+                            danger: '#EF4444',     // Vermelho crítico
+                            info: '#3B82F6'        // Azul informação
                         }
                     },
                     fontFamily: {
@@ -37,52 +53,56 @@
             }
         }
     </script>
-    
+
     <!-- CSS customizado -->
     <style>
         body {
             font-family: 'Inter', system-ui, sans-serif;
         }
-        
+
         .transition-smooth {
             transition: all 0.3s ease-in-out;
         }
-        
+
         .card-hover:hover {
             transform: translateY(-2px);
             box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
         }
-        
+
         .pulse-realtime {
             animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
         }
-        
-        .bg-gradient-senai {
-            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+
+        .bg-gradient-hero {
+            background: linear-gradient(135deg, #2563EB 0%, #7C3AED 100%);
         }
-        
+
+        .bg-gradient-baymax {
+            background: linear-gradient(135deg, #FEFEFE 0%, #F8FAFC 50%, #E2E8F0 100%);
+        }
+
         .status-online {
             @apply bg-green-500;
             box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.2);
         }
-        
+
         .status-offline {
             @apply bg-red-500;
             box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.2);
         }
-        
+
         .status-warning {
             @apply bg-yellow-500;
             box-shadow: 0 0 0 4px rgba(234, 179, 8, 0.2);
         }
-        
+
         /* 🆕 Indicador de conexão API */
         .api-indicator {
             position: relative;
             display: inline-flex;
             align-items: center;
         }
-        
+
         .api-indicator::after {
             content: '';
             position: absolute;
@@ -93,16 +113,16 @@
             border-radius: 50%;
             background: var(--status-color, #ef4444);
         }
-        
+
         .api-indicator.online::after {
             --status-color: #22c55e;
             animation: pulse 2s infinite;
         }
-        
+
         .api-indicator.offline::after {
             --status-color: #ef4444;
         }
-        
+
         .loading-spinner {
             border: 2px solid #f3f3f3;
             border-top: 2px solid #3498db;
@@ -111,15 +131,50 @@
             height: 20px;
             animation: spin 1s linear infinite;
         }
-        
+
+        .status-online {
+            background-color: #059669;
+            box-shadow: 0 0 0 4px rgba(5, 150, 105, 0.2);
+        }
+
+        .status-offline {
+            background-color: #EF4444;
+            box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.2);
+        }
+
+        .status-warning {
+            background-color: #F59E0B;
+            box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.2);
+        }
+
+        .logo-baymax {
+            background-color: #E2E8F0;
+            /* Cinza claro Baymax */
+            border: 1px solid #CBD5E1;
+            /* Borda sutil */
+            color: #374151;
+            /* Texto escuro */
+        }
+
+        .connector-baymax {
+            background-color: #374151;
+            /* Conector escuro */
+        }
+
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
     </style>
 </head>
+
 <body class="bg-gray-50 font-senai">
-    
+
     <!-- Header fixo com indicadores de API -->
     <header class="bg-white shadow-lg fixed top-0 left-0 right-0 z-50">
         <div class="max-w-full px-6">
@@ -129,22 +184,24 @@
                     <div class="flex items-center space-x-3">
                         <!-- Logo H-R conectado -->
                         <div class="flex items-center space-x-1">
-                            <div class="w-10 h-10 bg-gradient-senai rounded-full flex items-center justify-center shadow-lg">
-                                <span class="text-white font-bold text-lg">H</span>
+                            <div class="w-10 h-10 rounded-full flex items-center justify-center shadow-lg border border-gray-300"
+                                style="background-color: rgb(81, 83, 86);">
+                                <span class="text-white font-bold text-lg">B</span>
                             </div>
-                            <div class="w-6 h-1 bg-senai-primary rounded-full"></div>
-                            <div class="w-10 h-10 bg-gradient-senai rounded-full flex items-center justify-center shadow-lg">
-                                <span class="text-white font-bold text-lg">R</span>
+                            <div class="w-6 h-1 rounded-full" style="background-color: rgb(81, 83, 86);"></div>
+                            <div class="w-10 h-10 rounded-full flex items-center justify-center shadow-lg border border-gray-300"
+                                style="background-color: rgb(81, 83, 86);">
+                                <span class="text-white font-bold text-lg">H</span>
                             </div>
                         </div>
                         <div class="border-l border-gray-300 h-8 mx-2"></div>
                         <div>
-                            <h1 class="text-xl font-bold text-gray-800">SENAI Monitoring</h1>
-                            <p class="text-xs text-gray-500">Sistema IoT V2.1.0 + API Integration</p>
+                            <h1 class="text-xl font-bold text-gray-800">Hero Band</h1>
+                            <p class="text-xs text-gray-500">Sistema IoT V2.1.0 - Big Hero Team</p>
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Status e controles atualizados -->
                 <div class="flex items-center space-x-6">
                     <!-- 🆕 Indicador de conexão API -->
@@ -157,10 +214,10 @@
                         <!-- Loading spinner inicial -->
                         <div class="loading-spinner" id="loadingSpinner"></div>
                     </div>
-                    
+
                     <!-- Separador -->
                     <div class="border-l border-gray-200 h-8"></div>
-                    
+
                     <!-- Métricas rápidas -->
                     <div class="hidden md:flex items-center space-x-4 text-sm">
                         <div class="flex items-center space-x-1">
@@ -174,25 +231,28 @@
                             <span class="font-semibold text-green-600" id="headerOnlineCount">--</span>
                         </div>
                     </div>
-                    
+
                     <!-- Notificações -->
                     <div class="relative">
                         <button class="text-gray-600 hover:text-gray-800 transition-smooth relative">
                             <i class="fas fa-bell text-xl"></i>
-                            <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center" id="notificationCount">0</span>
+                            <span
+                                class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center"
+                                id="notificationCount">0</span>
                         </button>
                     </div>
-                    
+
                     <!-- 🆕 Botão de retry/refresh -->
-                    <button onclick="forceRefresh()" class="text-gray-600 hover:text-gray-800 transition-smooth relative" title="Atualizar dados">
+                    <button onclick="forceRefresh()"
+                        class="text-gray-600 hover:text-gray-800 transition-smooth relative" title="Atualizar dados">
                         <i class="fas fa-sync-alt text-lg" id="refreshIcon"></i>
                     </button>
-                    
+
                     <!-- Configurações -->
                     <button onclick="showSettings()" class="text-gray-600 hover:text-gray-800 transition-smooth">
                         <i class="fas fa-cog text-xl"></i>
                     </button>
-                    
+
                     <!-- Usuário -->
                     <div class="flex items-center space-x-2">
                         <div class="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
@@ -204,64 +264,71 @@
             </div>
         </div>
     </header>
-    
+
     <!-- Layout principal -->
     <div class="flex pt-16 min-h-screen">
-        
+
         <!-- Sidebar (inalterado) -->
         <aside class="w-64 bg-white shadow-lg fixed left-0 top-16 bottom-0 overflow-y-auto">
             <nav class="p-4 space-y-2">
-                
+
                 <!-- Menu Dashboard -->
-                <a href="#" onclick="showDashboard()" class="flex items-center space-x-3 px-4 py-3 text-gray-700 rounded-lg hover:bg-senai-light transition-smooth menu-item active">
-                    <i class="fas fa-chart-dashboard text-senai-primary"></i>
+                <a href="#" onclick="showDashboard()"
+                    class="flex items-center space-x-3 px-4 py-3 text-gray-700 rounded-lg hover:bg-baymax-100 transition-smooth menu-item active">
+                    <i class="fas fa-chart-dashboard text-hero-primary"></i>
                     <span class="font-medium">Dashboard</span>
                 </a>
-                
+
                 <!-- Menu Localização -->
-                <a href="#" onclick="showLocation()" class="flex items-center space-x-3 px-4 py-3 text-gray-700 rounded-lg hover:bg-senai-light transition-smooth menu-item">
-                    <i class="fas fa-map-marker-alt text-senai-secondary"></i>
+                <a href="#" onclick="showLocation()"
+                    class="flex items-center space-x-3 px-4 py-3 text-gray-700 rounded-lg hover:bg-baymax-100 transition-smooth menu-item">
+                    <i class="fas fa-map-marker-alt text-hero-secondary"></i>
                     <span class="font-medium">Localização</span>
                 </a>
-                
+
                 <!-- Menu Saúde -->
-                <a href="#" onclick="showHealth()" class="flex items-center space-x-3 px-4 py-3 text-gray-700 rounded-lg hover:bg-senai-light transition-smooth menu-item">
+                <a href="#" onclick="showHealth()"
+                    class="flex items-center space-x-3 px-4 py-3 text-gray-700 rounded-lg hover:bg-baymax-100 transition-smooth menu-item">
                     <i class="fas fa-heartbeat text-red-500"></i>
                     <span class="font-medium">Saúde</span>
                 </a>
-                
+
                 <!-- Menu Comunicação -->
-                <a href="#" onclick="showCommunication()" class="flex items-center space-x-3 px-4 py-3 text-gray-700 rounded-lg hover:bg-senai-light transition-smooth menu-item">
+                <a href="#" onclick="showCommunication()"
+                    class="flex items-center space-x-3 px-4 py-3 text-gray-700 rounded-lg hover:bg-baymax-100 transition-smooth menu-item">
                     <i class="fas fa-walkie-talkie text-green-500"></i>
                     <span class="font-medium">Comunicação</span>
                 </a>
-                
+
                 <!-- Menu Funcionários -->
-                <a href="#" onclick="showEmployees()" class="flex items-center space-x-3 px-4 py-3 text-gray-700 rounded-lg hover:bg-senai-light transition-smooth menu-item">
+                <a href="#" onclick="showEmployees()"
+                    class="flex items-center space-x-3 px-4 py-3 text-gray-700 rounded-lg hover:bg-baymax-100 transition-smooth menu-item">
                     <i class="fas fa-users text-blue-500"></i>
                     <span class="font-medium">Funcionários</span>
                 </a>
-                
+
                 <!-- Separador -->
                 <hr class="my-4 border-gray-200">
-                
+
                 <!-- Menu Configurações -->
-                <a href="#" onclick="showSettings()" class="flex items-center space-x-3 px-4 py-3 text-gray-700 rounded-lg hover:bg-senai-light transition-smooth menu-item">
+                <a href="#" onclick="showSettings()"
+                    class="flex items-center space-x-3 px-4 py-3 text-gray-700 rounded-lg hover:bg-baymax-100 transition-smooth menu-item">
                     <i class="fas fa-cog text-gray-500"></i>
                     <span class="font-medium">Configurações</span>
                 </a>
-                
+
                 <!-- Menu Relatórios -->
-                <a href="#" onclick="showReports()" class="flex items-center space-x-3 px-4 py-3 text-gray-700 rounded-lg hover:bg-senai-light transition-smooth menu-item">
+                <a href="#" onclick="showReports()"
+                    class="flex items-center space-x-3 px-4 py-3 text-gray-700 rounded-lg hover:bg-baymax-100 transition-smooth menu-item">
                     <i class="fas fa-chart-bar text-purple-500"></i>
                     <span class="font-medium">Relatórios</span>
                 </a>
-                
+
             </nav>
-            
+
             <!-- 🆕 Footer do sidebar com info da API -->
             <div class="absolute bottom-4 left-4 right-4">
-                <div class="bg-gradient-senai rounded-lg p-4 text-white text-center">
+                <div class="bg-gradient-hero rounded-lg p-4 text-white text-center">
                     <i class="fas fa-cloud text-2xl mb-2"></i>
                     <p class="text-sm font-medium">API V2.1.0</p>
                     <p class="text-xs opacity-90" id="sidebarApiStatus">Conectando...</p>
@@ -273,13 +340,13 @@
                 </div>
             </div>
         </aside>
-        
+
         <!-- Conteúdo principal (mantém estrutura existente) -->
         <main class="flex-1 ml-64 p-6">
-            
+
             <!-- Seção Dashboard -->
             <div id="dashboardSection" class="section-content">
-                
+
                 <!-- 🆕 Banner de status da API -->
                 <div id="apiStatusBanner" class="mb-6 p-4 rounded-lg border hidden">
                     <div class="flex items-center justify-between">
@@ -295,10 +362,10 @@
                         </button>
                     </div>
                 </div>
-                
+
                 <!-- Cards de estatísticas (mantém estrutura) -->
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                    
+
                     <!-- Total Funcionários -->
                     <div class="bg-white rounded-xl shadow-lg p-6 card-hover transition-smooth">
                         <div class="flex items-center justify-between">
@@ -314,7 +381,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Funcionários Ativos -->
                     <div class="bg-white rounded-xl shadow-lg p-6 card-hover transition-smooth">
                         <div class="flex items-center justify-between">
@@ -330,7 +397,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Alertas Críticos -->
                     <div class="bg-white rounded-xl shadow-lg p-6 card-hover transition-smooth">
                         <div class="flex items-center justify-between">
@@ -346,7 +413,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Setores Monitorados -->
                     <div class="bg-white rounded-xl shadow-lg p-6 card-hover transition-smooth">
                         <div class="flex items-center justify-between">
@@ -362,12 +429,12 @@
                             </div>
                         </div>
                     </div>
-                    
+
                 </div>
-                
+
                 <!-- Gráficos principais (mantém estrutura) -->
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-                    
+
                     <!-- Gráfico de Atividade -->
                     <div class="bg-white rounded-xl shadow-lg p-6">
                         <div class="flex items-center justify-between mb-4">
@@ -379,34 +446,38 @@
                                     <option>Último mês</option>
                                 </select>
                                 <!-- Indicador de fonte de dados -->
-                                <span class="text-xs px-2 py-1 rounded-full bg-gray-100 text-gray-600" id="activityDataSource">Mock</span>
+                                <span class="text-xs px-2 py-1 rounded-full bg-gray-100 text-gray-600"
+                                    id="activityDataSource">Mock</span>
                             </div>
                         </div>
                         <canvas id="activityChart" height="200"></canvas>
                     </div>
-                    
+
                     <!-- Distribuição por Setores -->
                     <div class="bg-white rounded-xl shadow-lg p-6">
                         <div class="flex items-center justify-between mb-4">
                             <h3 class="text-lg font-semibold text-gray-800">Distribuição por Setores</h3>
                             <!-- Indicador de fonte de dados -->
-                            <span class="text-xs px-2 py-1 rounded-full bg-gray-100 text-gray-600" id="sectorsDataSource">Mock</span>
+                            <span class="text-xs px-2 py-1 rounded-full bg-gray-100 text-gray-600"
+                                id="sectorsDataSource">Mock</span>
                         </div>
                         <canvas id="zonesChart" height="200"></canvas>
                     </div>
-                    
+
                 </div>
-                
+
                 <!-- Funcionários Online (mantém estrutura) -->
                 <div class="bg-white rounded-xl shadow-lg p-6">
                     <div class="flex items-center justify-between mb-4">
                         <h3 class="text-lg font-semibold text-gray-800">Funcionários Online</h3>
                         <div class="flex items-center space-x-2">
-                            <a href="#" onclick="showEmployees()" class="text-senai-primary hover:underline text-sm">Ver todos</a>
-                            <span class="text-xs px-2 py-1 rounded-full bg-gray-100 text-gray-600" id="employeesDataSource">Mock</span>
+                            <a href="#" onclick="showEmployees()" class="text-hero-primary hover:underline text-sm">Ver
+                                todos</a>
+                            <span class="text-xs px-2 py-1 rounded-full bg-gray-100 text-gray-600"
+                                id="employeesDataSource">Mock</span>
                         </div>
                     </div>
-                    
+
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="employeesGrid">
                         <!-- Será preenchido dinamicamente -->
                         <div class="flex items-center justify-center p-8 col-span-full">
@@ -415,44 +486,44 @@
                         </div>
                     </div>
                 </div>
-                
+
             </div>
-            
+
             <!-- Outras seções (mantém estrutura existente) -->
             <div id="locationSection" class="section-content hidden">
                 <h2 class="text-2xl font-bold mb-6">Localização dos Funcionários</h2>
                 <p class="text-gray-600">Seção em desenvolvimento... (Próximo: Capítulo 6.2)</p>
             </div>
-            
+
             <div id="healthSection" class="section-content hidden">
                 <h2 class="text-2xl font-bold mb-6">Monitoramento de Saúde</h2>
                 <p class="text-gray-600">Seção em desenvolvimento... (Próximo: Capítulo 6.3)</p>
             </div>
-            
+
             <div id="communicationSection" class="section-content hidden">
                 <h2 class="text-2xl font-bold mb-6">Sistema de Comunicação</h2>
                 <p class="text-gray-600">Seção em desenvolvimento... (Próximo: Capítulo 6.4)</p>
             </div>
-            
+
             <div id="employeesSection" class="section-content hidden">
                 <h2 class="text-2xl font-bold mb-6">Gestão de Funcionários</h2>
                 <p class="text-gray-600">Seção em desenvolvimento... (Próximo: Capítulo 6.5)</p>
             </div>
-            
+
         </main>
-        
+
     </div>
-    
+
     <!-- Modal de Login (atualizado) -->
     <div id="loginModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
         <div class="bg-white rounded-2xl p-8 max-w-md w-full mx-4 shadow-2xl">
             <div class="text-center mb-8">
                 <div class="flex justify-center items-center space-x-2 mb-4">
-                    <div class="w-12 h-12 bg-gradient-senai rounded-full flex items-center justify-center">
+                    <div class="w-12 h-12 bg-gradient-hero rounded-full flex items-center justify-center">
                         <span class="text-white font-bold text-xl">H</span>
                     </div>
-                    <div class="w-8 h-1 bg-senai-primary rounded-full"></div>
-                    <div class="w-12 h-12 bg-gradient-senai rounded-full flex items-center justify-center">
+                    <div class="w-8 h-1 bg-hero-primary rounded-full"></div>
+                    <div class="w-12 h-12 bg-gradient-hero rounded-full flex items-center justify-center">
                         <span class="text-white font-bold text-xl">R</span>
                     </div>
                 </div>
@@ -466,30 +537,38 @@
                     </div>
                 </div>
             </div>
-            
+
             <form class="space-y-4">
                 <div class="relative">
                     <i class="fas fa-user absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                    <input type="text" placeholder="Usuário" class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-senai-primary" value="admin">
+                    <input type="text" placeholder="Usuário"
+                        class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-hero-primary"
+                        value="admin">
                 </div>
                 <div class="relative">
                     <i class="fas fa-lock absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                    <input type="password" placeholder="Senha" class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-senai-primary" value="123">
+                    <input type="password" placeholder="Senha"
+                        class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-hero-primary"
+                        value="123">
                 </div>
                 <div class="relative">
                     <i class="fas fa-building absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                    <input type="text" placeholder="Acessos da Empresa" class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-senai-primary" value="SENAI">
+                    <input type="text" placeholder="Acessos da Empresa"
+                        class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-hero-primary"
+                        value="SENAI">
                 </div>
-                
+
                 <div class="flex space-x-4 mt-6">
-                    <button type="button" onclick="closeLogin()" class="flex-1 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-smooth">
+                    <button type="button" onclick="closeLogin()"
+                        class="flex-1 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-smooth">
                         Criar conta
                     </button>
-                    <button type="button" onclick="login()" class="flex-1 py-3 bg-gradient-senai text-white rounded-lg hover:opacity-90 transition-smooth">
+                    <button type="button" onclick="login()"
+                        class="flex-1 py-3 bg-gradient-hero text-white rounded-lg hover:opacity-90 transition-smooth">
                         Entrar
                     </button>
                 </div>
-                
+
                 <!-- 🆕 Modo demo -->
                 <div class="text-center mt-4">
                     <p class="text-xs text-gray-500">Modo demonstração ativo</p>
@@ -498,43 +577,43 @@
             </form>
         </div>
     </div>
-    
+
     <!-- Scripts atualizados -->
     <script src="assets/js/mock-data.js"></script>
     <script src="assets/js/api-service.js"></script>
     <script src="assets/js/charts.js"></script>
     <script src="assets/js/app.js"></script>
-    
+
     <!-- 🆕 Script adicional para funções do header -->
     <script>
         // Função para refresh manual
         function forceRefresh() {
             const icon = document.getElementById('refreshIcon');
             icon.classList.add('fa-spin');
-            
+
             updateRealTimeData().finally(() => {
                 setTimeout(() => {
                     icon.classList.remove('fa-spin');
                 }, 1000);
             });
         }
-        
+
         // Função para esconder banner
         function hideBanner() {
             document.getElementById('apiStatusBanner').classList.add('hidden');
         }
-        
+
         // Função para mostrar banner
         function showApiBanner(type, title, message) {
             const banner = document.getElementById('apiStatusBanner');
             const bannerTitle = document.getElementById('bannerTitle');
             const bannerMessage = document.getElementById('bannerMessage');
-            
+
             // Limpar classes anteriores
             banner.className = 'mb-6 p-4 rounded-lg border';
-            
+
             // Adicionar classe baseada no tipo
-            switch(type) {
+            switch (type) {
                 case 'success':
                     banner.classList.add('bg-green-50', 'border-green-200', 'text-green-800');
                     break;
@@ -547,24 +626,24 @@
                 default:
                     banner.classList.add('bg-blue-50', 'border-blue-200', 'text-blue-800');
             }
-            
+
             bannerTitle.textContent = title;
             bannerMessage.textContent = message;
             banner.classList.remove('hidden');
         }
-        
+
         // Atualizar indicadores visuais quando dados carregarem
         function updateDataSourceIndicators(isApiMode) {
             const indicators = [
                 'employeesSource',
-                'activeSource', 
+                'activeSource',
                 'alertsSource',
                 'sectorsSource',
                 'activityDataSource',
                 'sectorsDataSource',
                 'employeesDataSource'
             ];
-            
+
             indicators.forEach(id => {
                 const element = document.getElementById(id);
                 if (element) {
@@ -578,23 +657,23 @@
                 }
             });
         }
-        
+
         // Atualizar métricas no header
         function updateHeaderMetrics(data) {
             if (data && data.statistics) {
                 const employeeCount = document.getElementById('headerEmployeeCount');
                 const onlineCount = document.getElementById('headerOnlineCount');
-                
+
                 if (employeeCount) employeeCount.textContent = data.statistics.totalEmployees || '--';
                 if (onlineCount) onlineCount.textContent = data.statistics.activeEmployees || '--';
             }
         }
-        
+
         // Atualizar grid de funcionários
         function updateEmployeesGrid(employees) {
             const grid = document.getElementById('employeesGrid');
             if (!grid || !employees) return;
-            
+
             if (employees.length === 0) {
                 grid.innerHTML = `
                     <div class="flex items-center justify-center p-8 col-span-full">
@@ -604,7 +683,7 @@
                 `;
                 return;
             }
-            
+
             const employeeCards = employees.slice(0, 6).map(emp => `
                 <div class="flex items-center space-x-3 p-3 border rounded-lg hover:shadow-md transition-smooth">
                     <div class="w-10 h-10 bg-gradient-to-r ${getEmployeeGradient(emp.id)} rounded-full flex items-center justify-center">
@@ -617,20 +696,20 @@
                     <div class="w-3 h-3 ${getStatusClass(emp.status)} rounded-full"></div>
                 </div>
             `).join('');
-            
+
             grid.innerHTML = employeeCards;
         }
-        
+
         // Utilitários para funcionários
         function getInitials(name) {
             if (!name) return '??';
             return name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
         }
-        
+
         function getEmployeeGradient(id) {
             const gradients = [
                 'from-blue-500 to-blue-600',
-                'from-pink-500 to-pink-600', 
+                'from-pink-500 to-pink-600',
                 'from-green-500 to-green-600',
                 'from-purple-500 to-purple-600',
                 'from-yellow-500 to-yellow-600',
@@ -639,9 +718,9 @@
             const index = id.charCodeAt(id.length - 1) % gradients.length;
             return gradients[index];
         }
-        
+
         function getStatusClass(status) {
-            switch(status) {
+            switch (status) {
                 case 'online': return 'status-online';
                 case 'warning': return 'status-warning';
                 case 'offline': return 'status-offline';
@@ -649,6 +728,7 @@
             }
         }
     </script>
-    
+
 </body>
+
 </html>
