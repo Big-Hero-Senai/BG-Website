@@ -29,7 +29,7 @@ const CHART_CONFIG = {
 // Cores do tema SENAI
 const SENAI_COLORS = {
     primary: '#1e40af',
-    secondary: '#f97316', 
+    secondary: '#f97316',
     success: '#22c55e',
     warning: '#eab308',
     danger: '#ef4444',
@@ -60,7 +60,7 @@ let performanceChart = null;
 // ===================================
 function initializeCharts() {
     console.log('📊 Inicializando gráficos...');
-    
+
     // Aguardar um pouco para garantir que o DOM está pronto
     setTimeout(() => {
         try {
@@ -82,12 +82,12 @@ function initActivityChart() {
         console.warn('⚠️ Canvas activityChart não encontrado');
         return;
     }
-    
+
     const ctx = canvas.getContext('2d');
-    
+
     // Dados mockados para demonstração
     const mockData = generateActivityMockData();
-    
+
     activityChart = new Chart(ctx, {
         type: 'line',
         data: {
@@ -160,10 +160,10 @@ function initActivityChart() {
                     cornerRadius: 8,
                     displayColors: true,
                     callbacks: {
-                        title: function(context) {
+                        title: function (context) {
                             return `Horário: ${context[0].label}`;
                         },
-                        label: function(context) {
+                        label: function (context) {
                             return `${context.dataset.label}: ${context.raw} funcionários`;
                         }
                     }
@@ -182,16 +182,16 @@ function initDistributionChart() {
         console.warn('⚠️ Canvas zonesChart não encontrado');
         return;
     }
-    
+
     const ctx = canvas.getContext('2d');
-    
+
     // Dados dos setores (conforme API V2.0 real - sem zonas automáticas)
     const sectorsData = {
         labels: ['Produção', 'Almoxarifado', 'Administrativo', 'Outros'],
         data: [45, 23, 19, 0], // Dados simples baseados em setores
         colors: [SENAI_COLORS.primary, SENAI_COLORS.secondary, SENAI_COLORS.success, SENAI_COLORS.warning]
     };
-    
+
     distributionChart = new Chart(ctx, {
         type: 'doughnut',
         data: {
@@ -218,7 +218,7 @@ function initDistributionChart() {
                     borderWidth: 1,
                     cornerRadius: 8,
                     callbacks: {
-                        label: function(context) {
+                        label: function (context) {
                             const total = context.dataset.data.reduce((a, b) => a + b, 0);
                             const percentage = ((context.raw / total) * 100).toFixed(1);
                             return `${context.label}: ${context.raw} funcionários (${percentage}%)`;
@@ -234,7 +234,7 @@ function initDistributionChart() {
                             size: 12,
                             family: 'Inter'
                         },
-                        generateLabels: function(chart) {
+                        generateLabels: function (chart) {
                             const data = chart.data;
                             if (data.labels.length && data.datasets.length) {
                                 return data.labels.map((label, i) => {
@@ -242,7 +242,7 @@ function initDistributionChart() {
                                     const total = dataset.data.reduce((a, b) => a + b, 0);
                                     const value = dataset.data[i];
                                     const percentage = ((value / total) * 100).toFixed(1);
-                                    
+
                                     return {
                                         text: `${label} (${percentage}%)`,
                                         fillStyle: dataset.backgroundColor[i],
@@ -269,9 +269,9 @@ function initDistributionChart() {
 function initHealthChart() {
     const canvas = document.getElementById('healthChart');
     if (!canvas) return;
-    
+
     const ctx = canvas.getContext('2d');
-    
+
     healthChart = new Chart(ctx, {
         type: 'bar',
         data: {
@@ -318,9 +318,9 @@ function initHealthChart() {
 function initPerformanceChart() {
     const canvas = document.getElementById('performanceChart');
     if (!canvas) return;
-    
+
     const ctx = canvas.getContext('2d');
-    
+
     performanceChart = new Chart(ctx, {
         type: 'radar',
         data: {
@@ -362,12 +362,12 @@ function initPerformanceChart() {
 // ===================================
 function updateCharts() {
     if (!appState.realTimeData) return;
-    
+
     // Atualizar gráfico de atividade
     if (activityChart && appState.realTimeData.activity) {
         updateActivityChart();
     }
-    
+
     // Atualizar gráfico de distribuição
     if (distributionChart && appState.realTimeData.sectors) {
         updateDistributionChart();
@@ -376,7 +376,7 @@ function updateCharts() {
 
 function updateActivityChart() {
     const newData = appState.realTimeData.activity;
-    
+
     if (activityChart && newData) {
         activityChart.data.labels = newData.hours;
         activityChart.data.datasets[0].data = newData.data;
@@ -386,7 +386,7 @@ function updateActivityChart() {
 
 function updateDistributionChart() {
     const sectorsData = appState.realTimeData.sectors;
-    
+
     if (distributionChart && sectorsData) {
         const values = Object.values(sectorsData);
         distributionChart.data.datasets[0].data = values;
@@ -408,31 +408,31 @@ function generateActivityMockData() {
     const hours = [];
     const data = [];
     const offlineData = [];
-    
+
     // Gerar dados das últimas 24 horas
     for (let i = 23; i >= 0; i--) {
         const hour = new Date();
         hour.setHours(hour.getHours() - i);
         hours.push(hour.getHours().toString().padStart(2, '0') + ':00');
-        
+
         // Simular padrão de atividade (mais ativo durante horário comercial)
         const currentHour = hour.getHours();
         let baseActivity = 30; // Atividade base
-        
+
         if (currentHour >= 8 && currentHour <= 18) {
             baseActivity = 80; // Horário comercial
         } else if (currentHour >= 19 && currentHour <= 22) {
             baseActivity = 50; // Noite
         }
-        
+
         // Adicionar variação aleatória
         const activity = baseActivity + Math.floor(Math.random() * 20) - 10;
         const offline = Math.floor(Math.random() * 15) + 5;
-        
+
         data.push(Math.max(0, activity));
         offlineData.push(offline);
     }
-    
+
     return { hours, data, offlineData };
 }
 
@@ -457,7 +457,7 @@ function exportChart(chartName) {
         case 'health': chart = healthChart; break;
         case 'performance': chart = performanceChart; break;
     }
-    
+
     if (chart) {
         const url = chart.toBase64Image();
         const link = document.createElement('a');
@@ -475,7 +475,7 @@ function resetChartZoom(chartName) {
         case 'health': chart = healthChart; break;
         case 'performance': chart = performanceChart; break;
     }
-    
+
     if (chart && chart.resetZoom) {
         chart.resetZoom();
     }
@@ -491,7 +491,7 @@ function destroyCharts() {
             chart.destroy();
         }
     });
-    
+
     // Reset das variáveis
     activityChart = null;
     distributionChart = null;

@@ -420,7 +420,7 @@ const MOCK_PERFORMANCE = {
 const MOCK_HEALTH_DETAILS = {
     ranges: {
         heartRate: { min: 60, max: 100, unit: 'BPM' },
-        bloodPressure: { 
+        bloodPressure: {
             systolic: { min: 90, max: 140 },
             diastolic: { min: 60, max: 90 },
             unit: 'mmHg'
@@ -475,11 +475,11 @@ function updateMockDataRealTime() {
             employee.health = { ...employee.health, ...newHealth, lastUpdate: new Date() };
         }
     });
-    
+
     // Atualizar estatísticas
     MOCK_STATISTICS.general.lastUpdate = new Date();
     MOCK_STATISTICS.general.activeEmployees = getEmployeesByStatus('online').length;
-    
+
     return {
         employees: MOCK_EMPLOYEES,
         statistics: MOCK_STATISTICS,
@@ -516,7 +516,7 @@ if (typeof window !== 'undefined') {
         performance: MOCK_PERFORMANCE,
         healthDetails: MOCK_HEALTH_DETAILS,
         mobileConfig: MOCK_MOBILE_CONFIG,
-        
+
         // Funções utilitárias
         getRandomEmployee,
         getEmployeesByStatus,
@@ -524,7 +524,7 @@ if (typeof window !== 'undefined') {
         generateRandomHealthData,
         updateMockDataRealTime
     };
-    
+
     console.log('📊 Mock data carregado. Acesse via window.MOCK_DATA');
 }
 
