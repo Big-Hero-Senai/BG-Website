@@ -474,6 +474,156 @@
 
                 </div>
 
+                <!-- 🔍 SISTEMA DE FILTROS AVANÇADOS -->
+                <div class="bg-white rounded-xl shadow-lg p-6 mb-8" id="filtersSection">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-gray-800 flex items-center">
+                            <i class="fas fa-filter text-hero-primary mr-2"></i>
+                            Filtros Avançados
+                        </h3>
+                        <div class="flex items-center space-x-2">
+                            <button onclick="resetFilters()"
+                                class="text-sm text-gray-500 hover:text-hero-primary transition-smooth">
+                                <i class="fas fa-undo mr-1"></i>
+                                Limpar Filtros
+                            </button>
+                            <button onclick="toggleFiltersSection()" class="text-gray-500 hover:text-hero-primary"
+                                id="filtersToggle">
+                                <i class="fas fa-chevron-up"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="filtersContent" class="space-y-4">
+                        <!-- Linha 1: Filtros Principais -->
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+
+                            <!-- Filtro por Setor -->
+                            <div class="space-y-2">
+                                <label class="text-sm font-medium text-gray-700">Setor</label>
+                                <select id="sectorFilter"
+                                    class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-hero-primary focus:border-hero-primary transition-smooth">
+                                    <option value="">Todos os Setores</option>
+                                    <option value="Produção">Produção</option>
+                                    <option value="Almoxarifado">Almoxarifado</option>
+                                    <option value="Administrativo">Administrativo</option>
+                                    <option value="Área Externa">Área Externa</option>
+                                </select>
+                            </div>
+
+                            <!-- Filtro por Status -->
+                            <div class="space-y-2">
+                                <label class="text-sm font-medium text-gray-700">Status</label>
+                                <select id="statusFilter"
+                                    class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-hero-primary focus:border-hero-primary transition-smooth">
+                                    <option value="">Todos os Status</option>
+                                    <option value="online">🟢 Online</option>
+                                    <option value="warning">🟡 Atenção</option>
+                                    <option value="offline">🔴 Offline</option>
+                                </select>
+                            </div>
+
+                            <!-- Filtro por Período -->
+                            <div class="space-y-2">
+                                <label class="text-sm font-medium text-gray-700">Período</label>
+                                <select id="periodFilter"
+                                    class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-hero-primary focus:border-hero-primary transition-smooth">
+                                    <option value="realtime">Tempo Real</option>
+                                    <option value="1h">Última Hora</option>
+                                    <option value="24h" selected>Últimas 24h</option>
+                                    <option value="7d">Últimos 7 dias</option>
+                                    <option value="30d">Últimos 30 dias</option>
+                                </select>
+                            </div>
+
+                            <!-- Filtro por Métrica -->
+                            <div class="space-y-2">
+                                <label class="text-sm font-medium text-gray-700">Foco</label>
+                                <select id="metricFilter"
+                                    class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-hero-primary focus:border-hero-primary transition-smooth">
+                                    <option value="general">Visão Geral</option>
+                                    <option value="health">Saúde</option>
+                                    <option value="location">Localização</option>
+                                    <option value="performance">Performance</option>
+                                    <option value="alerts">Alertas</option>
+                                </select>
+                            </div>
+
+                        </div>
+
+                        <!-- Linha 2: Filtros Avançados -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t border-gray-200">
+
+                            <!-- Range de Frequência Cardíaca -->
+                            <div class="space-y-2">
+                                <label class="text-sm font-medium text-gray-700">Frequência Cardíaca (BPM)</label>
+                                <div class="flex items-center space-x-2">
+                                    <input type="number" id="heartRateMin" placeholder="Min"
+                                        class="w-20 p-2 border border-gray-300 rounded-lg text-sm" min="40" max="200"
+                                        value="60">
+                                    <span class="text-gray-400">até</span>
+                                    <input type="number" id="heartRateMax" placeholder="Max"
+                                        class="w-20 p-2 border border-gray-300 rounded-lg text-sm" min="40" max="200"
+                                        value="100">
+                                    <span class="text-xs text-gray-500 ml-2">Normal: 60-100</span>
+                                </div>
+                            </div>
+
+                            <!-- Filtro por Bateria -->
+                            <div class="space-y-2">
+                                <label class="text-sm font-medium text-gray-700">Nível de Bateria</label>
+                                <select id="batteryFilter"
+                                    class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-hero-primary focus:border-hero-primary transition-smooth">
+                                    <option value="">Todos os Níveis</option>
+                                    <option value="high">Alto (>70%)</option>
+                                    <option value="medium">Médio (30-70%)</option>
+                                    <option value="low">Baixo (<30%)< /option>
+                                    <option value="critical">Crítico (<15%)< /option>
+                                </select>
+                            </div>
+
+                            <!-- Busca por Nome -->
+                            <div class="space-y-2">
+                                <label class="text-sm font-medium text-gray-700">Buscar Funcionário</label>
+                                <div class="relative">
+                                    <input type="text" id="employeeSearch" placeholder="Nome ou ID..."
+                                        class="w-full p-2 pl-8 border border-gray-300 rounded-lg focus:ring-2 focus:ring-hero-primary focus:border-hero-primary transition-smooth">
+                                    <i
+                                        class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Linha 3: Resultados dos Filtros -->
+                        <div class="flex items-center justify-between pt-4 border-t border-gray-200">
+                            <div class="flex items-center space-x-4 text-sm text-gray-600">
+                                <span id="filterResults">
+                                    <i class="fas fa-users mr-1"></i>
+                                    <strong id="filteredCount">--</strong> funcionários encontrados
+                                </span>
+                                <span id="filterActiveInfo" class="hidden">
+                                    <i class="fas fa-filter mr-1 text-hero-primary"></i>
+                                    <strong id="activeFiltersCount">0</strong> filtros ativos
+                                </span>
+                            </div>
+
+                            <div class="flex items-center space-x-2">
+                                <button onclick="exportFilteredData()"
+                                    class="text-sm text-hero-primary hover:text-hero-secondary transition-smooth">
+                                    <i class="fas fa-download mr-1"></i>
+                                    Exportar
+                                </button>
+                                <button onclick="saveFilterPreset()"
+                                    class="text-sm text-hero-primary hover:text-hero-secondary transition-smooth">
+                                    <i class="fas fa-bookmark mr-1"></i>
+                                    Salvar Filtro
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Gráficos principais (mantém estrutura) -->
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
 

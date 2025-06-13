@@ -199,6 +199,48 @@ class HeroBandApiService {
         return await this.makeRequest('GET', `${API_CONFIG.ENDPOINTS.iotLocation}/${employeeId}`);
     }
 
+    // ===================================
+// 💓 MÉTODOS PARA DADOS DE SAÚDE REAIS
+// ===================================
+
+// Buscar dados de saúde de funcionário específico
+async getEmployeeHealthData(employeeId) {
+    return await this.makeRequest('GET', `${API_CONFIG.ENDPOINTS.iotHealth}/${employeeId}`);
+}
+
+// Buscar dados de saúde de todos os funcionários ativos
+async getAllEmployeesHealthData(employeeIds) {
+    console.log('💓 Buscando dados de saúde para funcionários:', employeeIds);
+    
+    try {
+        const healthPromises = employeeIds.map(employeeId => 
+            this.getEmployeeHealthData(employeeId).catch(error => {
+                console.warn(`⚠️ Erro ao buscar saúde de ${employeeId}:`, error);
+                return { success: false, employeeId, error: error.message };
+            })
+        );
+        
+        const results = await Promise.all(healthPromises);
+        
+        // Organizar resultados por employeeId
+        const healthDataMap = {};
+        results.forEach(result => {
+            if (result.success && result.data && result.data.length > 0) {
+                // Pegar o registro mais recente (primeiro do array)
+                const latestHealth = result.data[0];
+                healthDataMap[latestHealth.employee_id] = latestHealth;
+            }
+        });
+        
+        console.log('✅ Dados de saúde obtidos:', Object.keys(healthDataMap).length, 'funcionários');
+        return healthDataMap;
+        
+    } catch (error) {
+        console.error('❌ Erro ao buscar dados de saúde em lote:', error);
+        return {};
+    }
+}
+
     // Teste de performance
     async getPerformanceTest(employeeId) {
         return await this.makeRequest('GET', `${API_CONFIG.ENDPOINTS.iotPerformanceTest}/${employeeId}`);
@@ -303,6 +345,56 @@ class HeroBandApiService {
             lastSuccessfulRequest: this.lastSuccess || null
         };
     }
+
+    // ===================================
+// 💓 MÉTODOS PARA DADOS DE SAÚDE REAIS
+// ===================================
+
+// Buscar dados de saúde de funcionário específico
+async getEmployeeHealthData(employeeId) {
+    return await this.makeRequest('GET', `${API_CONFIG.ENDPOINTS.iotHealth}/${employeeId}`);
+}
+
+// Buscar dados de saúde de todos os funcionários ativos (para performance)
+async getAllEmployeesHealthData(employeeIds) {
+    console.log('💓 Buscando dados de saúde para funcionários:', employeeIds);
+    
+    try {
+        // Fazer requisições em paralelo (máximo 5 por vez para não sobrecarregar)
+        const batchSize = 5;
+        const healthPromises = [];
+        
+        for (let i = 0; i < employeeIds.length; i += batchSize) {
+            const batch = employeeIds.slice(i, i + batchSize);
+            const batchPromises = batch.map(employeeId => 
+                this.getEmployeeHealthData(employeeId).catch(error => {
+                    console.warn(`⚠️ Erro ao buscar saúde de ${employeeId}:`, error);
+                    return { success: false, employeeId, error: error.message };
+                })
+            );
+            healthPromises.push(...batchPromises);
+        }
+        
+        const results = await Promise.all(healthPromises);
+        
+        // Organizar resultados por employeeId
+        const healthDataMap = {};
+        results.forEach(result => {
+            if (result.success && result.data && result.data.length > 0) {
+                // Pegar o registro mais recente (primeiro do array)
+                const latestHealth = result.data[0];
+                healthDataMap[latestHealth.employee_id] = latestHealth;
+            }
+        });
+        
+        console.log('✅ Dados de saúde obtidos:', Object.keys(healthDataMap).length, 'funcionários');
+        return healthDataMap;
+        
+    } catch (error) {
+        console.error('❌ Erro ao buscar dados de saúde em lote:', error);
+        return {};
+    }
+}
 }
 
 // ===================================
