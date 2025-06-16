@@ -18,7 +18,12 @@ const API_CONFIG = {
         iotHealth: '/api/iot/health',
         iotLocation: '/api/iot/location',
         iotPerformanceTest: '/api/iot/performance-test',
-        iotTest: '/api/iot/test'
+        iotTest: '/api/iot/test',
+
+        // 🆕 Adicionar endpoints V3.0 específicos
+        iotBenchmark: '/api/iot/benchmark',           // Novo
+        iotPerformanceStats: '/api/iot/performance-stats', // Novo  
+        iotDashboardHealth: '/api/iot/dashboard-health',   // Novo V3 exclusivo
     },
 
     // Configurações de request
@@ -200,46 +205,46 @@ class HeroBandApiService {
     }
 
     // ===================================
-// 💓 MÉTODOS PARA DADOS DE SAÚDE REAIS
-// ===================================
+    // 💓 MÉTODOS PARA DADOS DE SAÚDE REAIS
+    // ===================================
 
-// Buscar dados de saúde de funcionário específico
-async getEmployeeHealthData(employeeId) {
-    return await this.makeRequest('GET', `${API_CONFIG.ENDPOINTS.iotHealth}/${employeeId}`);
-}
-
-// Buscar dados de saúde de todos os funcionários ativos
-async getAllEmployeesHealthData(employeeIds) {
-    console.log('💓 Buscando dados de saúde para funcionários:', employeeIds);
-    
-    try {
-        const healthPromises = employeeIds.map(employeeId => 
-            this.getEmployeeHealthData(employeeId).catch(error => {
-                console.warn(`⚠️ Erro ao buscar saúde de ${employeeId}:`, error);
-                return { success: false, employeeId, error: error.message };
-            })
-        );
-        
-        const results = await Promise.all(healthPromises);
-        
-        // Organizar resultados por employeeId
-        const healthDataMap = {};
-        results.forEach(result => {
-            if (result.success && result.data && result.data.length > 0) {
-                // Pegar o registro mais recente (primeiro do array)
-                const latestHealth = result.data[0];
-                healthDataMap[latestHealth.employee_id] = latestHealth;
-            }
-        });
-        
-        console.log('✅ Dados de saúde obtidos:', Object.keys(healthDataMap).length, 'funcionários');
-        return healthDataMap;
-        
-    } catch (error) {
-        console.error('❌ Erro ao buscar dados de saúde em lote:', error);
-        return {};
+    // Buscar dados de saúde de funcionário específico
+    async getEmployeeHealthData(employeeId) {
+        return await this.makeRequest('GET', `${API_CONFIG.ENDPOINTS.iotHealth}/${employeeId}`);
     }
-}
+
+    // Buscar dados de saúde de todos os funcionários ativos
+    async getAllEmployeesHealthData(employeeIds) {
+        console.log('💓 Buscando dados de saúde para funcionários:', employeeIds);
+
+        try {
+            const healthPromises = employeeIds.map(employeeId =>
+                this.getEmployeeHealthData(employeeId).catch(error => {
+                    console.warn(`⚠️ Erro ao buscar saúde de ${employeeId}:`, error);
+                    return { success: false, employeeId, error: error.message };
+                })
+            );
+
+            const results = await Promise.all(healthPromises);
+
+            // Organizar resultados por employeeId
+            const healthDataMap = {};
+            results.forEach(result => {
+                if (result.success && result.data && result.data.length > 0) {
+                    // Pegar o registro mais recente (primeiro do array)
+                    const latestHealth = result.data[0];
+                    healthDataMap[latestHealth.employee_id] = latestHealth;
+                }
+            });
+
+            console.log('✅ Dados de saúde obtidos:', Object.keys(healthDataMap).length, 'funcionários');
+            return healthDataMap;
+
+        } catch (error) {
+            console.error('❌ Erro ao buscar dados de saúde em lote:', error);
+            return {};
+        }
+    }
 
     // Teste de performance
     async getPerformanceTest(employeeId) {
@@ -347,54 +352,73 @@ async getAllEmployeesHealthData(employeeIds) {
     }
 
     // ===================================
-// 💓 MÉTODOS PARA DADOS DE SAÚDE REAIS
-// ===================================
+    // 💓 MÉTODOS PARA DADOS DE SAÚDE REAIS
+    // ===================================
 
-// Buscar dados de saúde de funcionário específico
-async getEmployeeHealthData(employeeId) {
-    return await this.makeRequest('GET', `${API_CONFIG.ENDPOINTS.iotHealth}/${employeeId}`);
-}
-
-// Buscar dados de saúde de todos os funcionários ativos (para performance)
-async getAllEmployeesHealthData(employeeIds) {
-    console.log('💓 Buscando dados de saúde para funcionários:', employeeIds);
-    
-    try {
-        // Fazer requisições em paralelo (máximo 5 por vez para não sobrecarregar)
-        const batchSize = 5;
-        const healthPromises = [];
-        
-        for (let i = 0; i < employeeIds.length; i += batchSize) {
-            const batch = employeeIds.slice(i, i + batchSize);
-            const batchPromises = batch.map(employeeId => 
-                this.getEmployeeHealthData(employeeId).catch(error => {
-                    console.warn(`⚠️ Erro ao buscar saúde de ${employeeId}:`, error);
-                    return { success: false, employeeId, error: error.message };
-                })
-            );
-            healthPromises.push(...batchPromises);
-        }
-        
-        const results = await Promise.all(healthPromises);
-        
-        // Organizar resultados por employeeId
-        const healthDataMap = {};
-        results.forEach(result => {
-            if (result.success && result.data && result.data.length > 0) {
-                // Pegar o registro mais recente (primeiro do array)
-                const latestHealth = result.data[0];
-                healthDataMap[latestHealth.employee_id] = latestHealth;
-            }
-        });
-        
-        console.log('✅ Dados de saúde obtidos:', Object.keys(healthDataMap).length, 'funcionários');
-        return healthDataMap;
-        
-    } catch (error) {
-        console.error('❌ Erro ao buscar dados de saúde em lote:', error);
-        return {};
+    // Buscar dados de saúde de funcionário específico
+    async getEmployeeHealthData(employeeId) {
+        return await this.makeRequest('GET', `${API_CONFIG.ENDPOINTS.iotHealth}/${employeeId}`);
     }
-}
+
+    // Buscar dados de saúde de todos os funcionários ativos (para performance)
+    async getAllEmployeesHealthData(employeeIds) {
+        console.log('💓 Buscando dados de saúde para funcionários:', employeeIds);
+
+        try {
+            // Fazer requisições em paralelo (máximo 5 por vez para não sobrecarregar)
+            const batchSize = 5;
+            const healthPromises = [];
+
+            for (let i = 0; i < employeeIds.length; i += batchSize) {
+                const batch = employeeIds.slice(i, i + batchSize);
+                const batchPromises = batch.map(employeeId =>
+                    this.getEmployeeHealthData(employeeId).catch(error => {
+                        console.warn(`⚠️ Erro ao buscar saúde de ${employeeId}:`, error);
+                        return { success: false, employeeId, error: error.message };
+                    })
+                );
+                healthPromises.push(...batchPromises);
+            }
+
+            const results = await Promise.all(healthPromises);
+
+            // Organizar resultados por employeeId
+            const healthDataMap = {};
+            results.forEach(result => {
+                if (result.success && result.data && result.data.length > 0) {
+                    // Pegar o registro mais recente (primeiro do array)
+                    const latestHealth = result.data[0];
+                    healthDataMap[latestHealth.employee_id] = latestHealth;
+                }
+            });
+
+            console.log('✅ Dados de saúde obtidos:', Object.keys(healthDataMap).length, 'funcionários');
+            return healthDataMap;
+
+        } catch (error) {
+            console.error('❌ Erro ao buscar dados de saúde em lote:', error);
+            return {};
+        }
+    }
+
+    // ===================================
+    // 🆕 MÉTODOS V3.0 ESPECÍFICOS
+    // ===================================
+
+    // Benchmark V2 vs V3 automático
+    async getBenchmarkData(employeeId) {
+        return await this.makeRequest('GET', `${API_CONFIG.ENDPOINTS.iotBenchmark}/${employeeId}`);
+    }
+
+    // Performance stats em tempo real V3
+    async getPerformanceStatsV3() {
+        return await this.makeRequest('GET', API_CONFIG.ENDPOINTS.iotPerformanceStats);
+    }
+
+    // Dashboard health analytics (exclusivo V3)
+    async getDashboardHealthAnalytics() {
+        return await this.makeRequest('GET', API_CONFIG.ENDPOINTS.iotDashboardHealth);
+    }
 }
 
 // ===================================
@@ -409,7 +433,7 @@ class HeroBandWebSocket {
         this.maxReconnectAttempts = 5;
         this.reconnectDelay = 3000;
         this.callbacks = new Map();
-        
+
         console.log('🔌 Hero Band WebSocket Client inicializado');
     }
 
@@ -425,7 +449,7 @@ class HeroBandWebSocket {
             console.log('🔌 Conectando WebSocket:', wsUrl);
 
             this.ws = new WebSocket(wsUrl);
-            
+
             this.ws.onopen = () => this.onOpen();
             this.ws.onmessage = (event) => this.onMessage(event);
             this.ws.onclose = (event) => this.onClose(event);
@@ -469,10 +493,10 @@ class HeroBandWebSocket {
         console.log('✅ WebSocket conectado!');
         this.isConnected = true;
         this.reconnectAttempts = 0;
-        
+
         // Registrar para atualizações
         this.send('register', { clientType: 'dashboard' });
-        
+
         // Callback para conexão
         this.triggerCallbacks('connected', { status: 'connected' });
     }
@@ -481,10 +505,10 @@ class HeroBandWebSocket {
         try {
             const message = JSON.parse(event.data);
             console.log('📥 WebSocket recebido:', message.type, message.data);
-            
+
             // Trigger callbacks
             this.triggerCallbacks(message.type, message.data);
-            
+
         } catch (error) {
             console.error('❌ Erro ao processar mensagem WebSocket:', error);
         }
@@ -493,17 +517,17 @@ class HeroBandWebSocket {
     onClose(event) {
         console.log('🔌 WebSocket desconectado:', event.code, event.reason);
         this.isConnected = false;
-        
+
         // Auto-reconectar
         if (this.reconnectAttempts < this.maxReconnectAttempts) {
             this.reconnectAttempts++;
             console.log(`🔄 Tentativa de reconexão ${this.reconnectAttempts}/${this.maxReconnectAttempts}`);
-            
+
             setTimeout(() => {
                 this.connect();
             }, this.reconnectDelay);
         }
-        
+
         this.triggerCallbacks('disconnected', { code: event.code, reason: event.reason });
     }
 
