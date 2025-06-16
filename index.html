@@ -340,13 +340,6 @@
                     <span class="font-medium">Saúde</span>
                 </a>
 
-                <!-- Menu Comunicação -->
-                <a href="#" onclick="showCommunication()"
-                    class="flex items-center space-x-3 px-4 py-3 text-gray-700 rounded-lg hover:bg-baymax-100 transition-smooth menu-item">
-                    <i class="fas fa-walkie-talkie text-green-500"></i>
-                    <span class="font-medium">Comunicação</span>
-                </a>
-
                 <!-- Menu Funcionários -->
                 <a href="#" onclick="showEmployees()"
                     class="flex items-center space-x-3 px-4 py-3 text-gray-700 rounded-lg hover:bg-baymax-100 transition-smooth menu-item">
@@ -703,24 +696,301 @@
             </div>
 
             <!-- Outras seções (mantém estrutura existente) -->
+            <!-- Seção Localização -->
             <div id="locationSection" class="section-content hidden">
-                <h2 class="text-2xl font-bold mb-6">Localização dos Funcionários</h2>
-                <p class="text-gray-600">Seção em desenvolvimento... (Próximo: Capítulo 6.2)</p>
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800">Localização dos Funcionários</h2>
+                    <div class="flex items-center space-x-2">
+                        <button onclick="refreshLocationData()"
+                            class="bg-hero-primary text-white px-4 py-2 rounded-lg hover:bg-hero-secondary transition-smooth">
+                            <i class="fas fa-sync-alt mr-2"></i>Atualizar
+                        </button>
+                        <button onclick="toggleMapView()"
+                            class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-smooth">
+                            <i class="fas fa-map mr-2"></i>Mapa
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Cards de Localização -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500 text-sm font-medium">Funcionários Online</p>
+                                <p class="text-3xl font-bold text-green-600" id="locationOnlineCount">--</p>
+                                <p class="text-green-500 text-sm">Localizados</p>
+                            </div>
+                            <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-map-marker-alt text-green-600 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500 text-sm font-medium">Setores Ativos</p>
+                                <p class="text-3xl font-bold text-blue-600" id="activeSectorsCount">--</p>
+                                <p class="text-blue-500 text-sm">Com funcionários</p>
+                            </div>
+                            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-building text-blue-600 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500 text-sm font-medium">Área Externa</p>
+                                <p class="text-3xl font-bold text-orange-600" id="externalAreaCount">--</p>
+                                <p class="text-orange-500 text-sm">Funcionários</p>
+                            </div>
+                            <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-map text-orange-600 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500 text-sm font-medium">Movimentações</p>
+                                <p class="text-3xl font-bold text-purple-600" id="movementsCount">--</p>
+                                <p class="text-purple-500 text-sm">Últimas 24h</p>
+                            </div>
+                            <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-route text-purple-600 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mapa e Lista -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Mapa Setores -->
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Mapa dos Setores</h3>
+                        <div class="bg-gray-100 rounded-lg h-64 flex items-center justify-center">
+                            <div class="text-center">
+                                <i class="fas fa-map text-4xl text-gray-400 mb-2"></i>
+                                <p class="text-gray-500">Mapa Interativo</p>
+                                <p class="text-sm text-gray-400">Hero Band V3.0</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Lista Funcionários por Setor -->
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Funcionários por Setor</h3>
+                        <div id="employeesBySector" class="space-y-3">
+                            <!-- Será preenchido dinamicamente -->
+                        </div>
+                    </div>
+                </div>
             </div>
 
+            <!-- Seção Saúde -->
             <div id="healthSection" class="section-content hidden">
-                <h2 class="text-2xl font-bold mb-6">Monitoramento de Saúde</h2>
-                <p class="text-gray-600">Seção em desenvolvimento... (Próximo: Capítulo 6.3)</p>
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800">Monitoramento de Saúde</h2>
+                    <div class="flex items-center space-x-2">
+                        <button onclick="refreshHealthData()"
+                            class="bg-hero-primary text-white px-4 py-2 rounded-lg hover:bg-hero-secondary transition-smooth">
+                            <i class="fas fa-sync-alt mr-2"></i>Atualizar
+                        </button>
+                        <button onclick="exportHealthReport()"
+                            class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-smooth">
+                            <i class="fas fa-download mr-2"></i>Relatório
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Cards Métricas Saúde -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500 text-sm font-medium">Status Normal</p>
+                                <p class="text-3xl font-bold text-green-600" id="healthNormalCount">--</p>
+                                <p class="text-green-500 text-sm">Funcionários</p>
+                            </div>
+                            <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-heart text-green-600 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500 text-sm font-medium">Atenção</p>
+                                <p class="text-3xl font-bold text-yellow-600" id="healthWarningCount">--</p>
+                                <p class="text-yellow-500 text-sm">Monitorar</p>
+                            </div>
+                            <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-exclamation-triangle text-yellow-600 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500 text-sm font-medium">Crítico</p>
+                                <p class="text-3xl font-bold text-red-600" id="healthCriticalCount">--</p>
+                                <p class="text-red-500 text-sm">Intervenção</p>
+                            </div>
+                            <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-exclamation-circle text-red-600 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500 text-sm font-medium">Freq. Cardíaca Média</p>
+                                <p class="text-3xl font-bold text-blue-600" id="avgHeartRate">--</p>
+                                <p class="text-blue-500 text-sm">BPM</p>
+                            </div>
+                            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-heartbeat text-blue-600 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gráficos Saúde -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Distribuição Status Saúde</h3>
+                        <canvas id="healthStatusChart" height="200"></canvas>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Frequência Cardíaca - 24h</h3>
+                        <canvas id="heartRateChart" height="200"></canvas>
+                    </div>
+                </div>
+
+                <!-- Lista Funcionários Saúde -->
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Monitoramento Individual</h3>
+                    <div id="healthEmployeesList" class="space-y-4">
+                        <!-- Será preenchido dinamicamente -->
+                    </div>
+                </div>
             </div>
 
-            <div id="communicationSection" class="section-content hidden">
-                <h2 class="text-2xl font-bold mb-6">Sistema de Comunicação</h2>
-                <p class="text-gray-600">Seção em desenvolvimento... (Próximo: Capítulo 6.4)</p>
-            </div>
-
+            <!-- Seção Funcionários -->
             <div id="employeesSection" class="section-content hidden">
-                <h2 class="text-2xl font-bold mb-6">Gestão de Funcionários</h2>
-                <p class="text-gray-600">Seção em desenvolvimento... (Próximo: Capítulo 6.5)</p>
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800">Gestão de Funcionários</h2>
+                    <div class="flex items-center space-x-2">
+                        <button onclick="refreshEmployeesData()"
+                            class="bg-hero-primary text-white px-4 py-2 rounded-lg hover:bg-hero-secondary transition-smooth">
+                            <i class="fas fa-sync-alt mr-2"></i>Atualizar
+                        </button>
+                        <button onclick="exportEmployeesReport()"
+                            class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-smooth">
+                            <i class="fas fa-download mr-2"></i>Exportar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Cards Funcionários -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500 text-sm font-medium">Total Cadastrados</p>
+                                <p class="text-3xl font-bold text-blue-600" id="totalEmployeesCount">--</p>
+                                <p class="text-blue-500 text-sm">Funcionários</p>
+                            </div>
+                            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-users text-blue-600 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500 text-sm font-medium">Ativos</p>
+                                <p class="text-3xl font-bold text-green-600" id="activeEmployeesCount">--</p>
+                                <p class="text-green-500 text-sm">Online agora</p>
+                            </div>
+                            <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-user-check text-green-600 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500 text-sm font-medium">Dispositivos</p>
+                                <p class="text-3xl font-bold text-purple-600" id="devicesConnectedCount">--</p>
+                                <p class="text-purple-500 text-sm">Conectados</p>
+                            </div>
+                            <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-wifi text-purple-600 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500 text-sm font-medium">Setores</p>
+                                <p class="text-3xl font-bold text-orange-600" id="activeSectorsEmployees">--</p>
+                                <p class="text-orange-500 text-sm">Com funcionários</p>
+                            </div>
+                            <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-building text-orange-600 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabela Funcionários -->
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-gray-800">Lista de Funcionários</h3>
+                        <div class="flex items-center space-x-2">
+                            <input type="text" id="searchEmployees" placeholder="Buscar funcionário..."
+                                class="px-3 py-2 border rounded-lg text-sm w-64">
+                            <select id="filterByStatus" class="px-3 py-2 border rounded-lg text-sm">
+                                <option value="">Todos Status</option>
+                                <option value="online">Online</option>
+                                <option value="offline">Offline</option>
+                                <option value="warning">Atenção</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Funcionário</th>
+                                    <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Setor</th>
+                                    <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Status</th>
+                                    <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Freq. Cardíaca
+                                    </th>
+                                    <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Bateria</th>
+                                    <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Última Atualização
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody id="employeesTableBody">
+                                <!-- Será preenchido dinamicamente -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
 
             <!-- 🆕 Seção Performance V3.0 -->
@@ -930,10 +1200,10 @@
             indicators.forEach(id => {
                 const element = document.getElementById(id);
                 if (element) {
-                    
-                        element.textContent = 'API V3.0';
-                        element.className = 'text-xs px-2 py-1 rounded-full bg-green-100 text-green-700';
-                    
+
+                    element.textContent = 'API V3.0';
+                    element.className = 'text-xs px-2 py-1 rounded-full bg-green-100 text-green-700';
+
                 }
             });
         }

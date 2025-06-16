@@ -59,18 +59,40 @@ let performanceChart = null;
 // 🚀 INICIALIZAÇÃO DOS GRÁFICOS
 // ===================================
 function initializeCharts() {
-    console.log('📊 Inicializando gráficos...');
+    console.log('📊 Inicializando gráficos V3.0...');
 
-    // Aguardar um pouco para garantir que o DOM está pronto
     setTimeout(() => {
         try {
             initActivityChart();
             initDistributionChart();
-            console.log('✅ Gráficos inicializados com sucesso');
+            initHealthStatusChart();     // 🆕
+            initHeartRateChart();        // 🆕
+            console.log('✅ Gráficos V3.0 inicializados com sucesso');
         } catch (error) {
             console.error('❌ Erro ao inicializar gráficos:', error);
         }
     }, 500);
+}
+
+// ===================================
+// 🔄 ATUALIZAR GRÁFICOS DE SAÚDE
+// ===================================
+function updateHealthCharts(normal, warning, critical) {
+    // Inicializar gráficos se não existirem
+    if (!window.healthStatusChart) {
+        initHealthStatusChart();
+    }
+    if (!window.heartRateChart) {
+        initHeartRateChart();
+    }
+    
+    // Atualizar após inicialização
+    setTimeout(() => {
+        if (window.healthStatusChart) {
+            window.healthStatusChart.data.datasets[0].data = [normal, warning, critical];
+            window.healthStatusChart.update('active');
+        }
+    }, 100);
 }
 
 // ===================================
@@ -264,6 +286,127 @@ function initDistributionChart() {
 }
 
 // ===================================
+// 💓 GRÁFICO DE STATUS DE SAÚDE
+// ===================================
+function initHealthStatusChart() {
+    const canvas = document.getElementById('healthStatusChart');
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+
+    window.healthStatusChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Normal', 'Atenção', 'Crítico'],
+            datasets: [{
+                data: [78, 12, 3],
+                backgroundColor: [
+                    SENAI_COLORS.success,
+                    SENAI_COLORS.warning,
+                    SENAI_COLORS.danger
+                ],
+                borderColor: '#ffffff',
+                borderWidth: 3
+            }]
+        },
+        options: {
+            ...CHART_CONFIG,
+            cutout: '60%',
+            plugins: {
+                ...CHART_CONFIG.plugins,
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            const percentage = ((context.raw / total) * 100).toFixed(1);
+                            return `${context.label}: ${context.raw} funcionários (${percentage}%)`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+// ===================================
+// 💗 GRÁFICO FREQUÊNCIA CARDÍACA
+// ===================================
+function initHeartRateChart() {
+    const canvas = document.getElementById('heartRateChart');
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+
+    // Gerar dados das últimas 24h
+    const hours = [];
+    const heartRateData = [];
+    
+    for (let i = 23; i >= 0; i--) {
+        const hour = new Date();
+        hour.setHours(hour.getHours() - i);
+        hours.push(hour.getHours().toString().padStart(2, '0') + ':00');
+        
+        // Simular frequência cardíaca média (70-85 BPM)
+        const baseRate = 75;
+        const variation = Math.random() * 15 - 7.5; // -7.5 a +7.5
+        heartRateData.push(Math.round(baseRate + variation));
+    }
+
+    window.heartRateChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: hours,
+            datasets: [{
+                label: 'Frequência Cardíaca Média',
+                data: heartRateData,
+                borderColor: SENAI_COLORS.danger,
+                backgroundColor: createGradient(ctx, ['#ef4444', '#dc2626'], 0.2),
+                borderWidth: 3,
+                fill: true,
+                tension: 0.4,
+                pointBackgroundColor: SENAI_COLORS.danger,
+                pointBorderColor: '#ffffff',
+                pointBorderWidth: 2,
+                pointRadius: 4
+            }]
+        },
+        options: {
+            ...CHART_CONFIG,
+            scales: {
+                y: {
+                    beginAtZero: false,
+                    min: 60,
+                    max: 100,
+                    grid: {
+                        color: '#f3f4f6'
+                    },
+                    ticks: {
+                        callback: function(value) {
+                            return value + ' BPM';
+                        }
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    }
+                }
+            },
+            plugins: {
+                ...CHART_CONFIG.plugins,
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return `${context.dataset.label}: ${context.raw} BPM`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+// ===================================
 // 💓 GRÁFICO DE SAÚDE (para seção de saúde)
 // ===================================
 function initHealthChart() {
@@ -366,11 +509,22 @@ function updateCharts() {
     // Atualizar gráfico de atividade
     if (activityChart && appState.realTimeData.activity) {
         updateActivityChart();
+    } else if (activityChart) {
+        // 🆕 Usar dados padrão se não tiver dados reais
+        const defaultActivity = generateActivityMockData();
+        activityChart.data.labels = defaultActivity.hours;
+        activityChart.data.datasets[0].data = defaultActivity.data;
+        activityChart.update('active');
     }
 
     // Atualizar gráfico de distribuição
     if (distributionChart && appState.realTimeData.sectors) {
         updateDistributionChart();
+    } else if (distributionChart) {
+        // 🆕 Usar dados padrão se não tiver dados reais
+        const defaultSectors = { 'Produção': 2, 'Almoxarifado': 1, 'Administrativo': 1, 'Área Externa': 0 };
+        distributionChart.data.datasets[0].data = Object.values(defaultSectors);
+        distributionChart.update('active');
     }
 }
 
